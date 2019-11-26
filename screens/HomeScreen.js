@@ -10,17 +10,10 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import BottomSheet from 'reanimated-bottom-sheet'
+import BottomSheet from 'reanimated-bottom-sheet';
 
 var firebaseConfig = {
-  apiKey: 'AIzaSyCkUqpsRdN83jH8o2y5ZfQ6VHYOydEPOSQ',
-  authDomain: 'fixxyworker.firebaseapp.com',
-  databaseURL: 'https://fixxyworker.firebaseio.com',
-  projectId: 'fixxyworker',
-  storageBucket: 'fixxyworker.appspot.com',
-  messagingSenderId: '492536156918',
-  appId: '1:492536156918:web:f8d8feaa2c267b261d92d7',
-  measurementId: 'G-78KBVBX2N2',
+
 };
 
 // Initialize Firebase
@@ -34,10 +27,10 @@ export default class HomeScreen extends React.Component {
   };
 
   stopJob = async () => {
-    //stop receive notification 
+    //stop receive notification
     //stop tracking location
-    await Location.stop
-  }
+    await Location.stop;
+  };
 
   startJob = async () => {
     //push id device to sever
@@ -97,14 +90,15 @@ export default class HomeScreen extends React.Component {
   };
 
   renderContent = () => {
-    if(notification){
-      return (
-          <View>
+    if (this.state.notification) {
+      return (<View >
 
-          </View>
-        )
-   }
-   }
+      </View>);
+    }
+    return(
+      
+    )
+  };
 
   render () {
     return (
@@ -134,7 +128,7 @@ export default class HomeScreen extends React.Component {
             </TouchableOpacity>
           </View>
           <View style={{flex: 1}}>
-            <TouchableOpacity  onPress={this.startJob}>
+            <TouchableOpacity onPress={this.startJob}>
               <View style={styles.buttonView}>
                 <Image
                   style={{width: 70, height: 70}}
@@ -148,7 +142,11 @@ export default class HomeScreen extends React.Component {
           </View>
         </View>
         <BottomSheet
-          snapPoints={[Dimensions.get('screen').height/2,Dimensions.get('screen').height/4, 0]}
+          snapPoints={[
+            Dimensions.get ('screen').height / 2,
+            Dimensions.get ('screen').height / 4,
+            0,
+          ]}
           initialSnap={0}
           renderContent={this.renderContent}
         />
@@ -156,7 +154,7 @@ export default class HomeScreen extends React.Component {
     );
   }
 }
- 
+
 const styles = StyleSheet.create ({
   container: {
     flex: 1,

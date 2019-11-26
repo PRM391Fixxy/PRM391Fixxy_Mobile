@@ -11,14 +11,7 @@ import BottomSheet from 'reanimated-bottom-sheet'
 
 
 var firebaseConfig = {
-  apiKey: "AIzaSyCkUqpsRdN83jH8o2y5ZfQ6VHYOydEPOSQ",
-  authDomain: "fixxyworker.firebaseapp.com",
-  databaseURL: "https://fixxyworker.firebaseio.com",
-  projectId: "fixxyworker",
-  storageBucket: "fixxyworker.appspot.com",
-  messagingSenderId: "492536156918",
-  appId: "1:492536156918:web:f8d8feaa2c267b261d92d7",
-  measurementId: "G-78KBVBX2N2"
+ 
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -33,7 +26,6 @@ export default class HomeTabs extends React.Component {
      
     }
 
-    
 
     startWork = async () => {
         registerForPushNotificationsAsync();
