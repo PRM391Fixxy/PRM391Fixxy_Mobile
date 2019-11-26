@@ -7,6 +7,7 @@ import { Platform, ActivityIndicator, StatusBar, View } from "react-native";
 import Login from "./screens/LoginScreen";
 import Home from "./screens/HomeScreen";
 import NavigationService from "./service/navigation";
+import MapDirection from './components/MapDirection'
 
 const Container = createStackNavigator (
   {
@@ -19,6 +20,13 @@ const Container = createStackNavigator (
     },
     Home: {
       screen: Home,
+      navigationOptions: {
+        header: null,
+        gesturesEnabled: false,
+      },
+    },
+    MapDirection: {
+      screen: MapDirection,
       navigationOptions: {
         header: null,
         gesturesEnabled: false,

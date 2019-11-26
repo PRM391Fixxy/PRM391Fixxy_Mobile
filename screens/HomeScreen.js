@@ -7,10 +7,17 @@ import {
   StatusBar,
   Platform,
   Image,
+  AsyncStorage,
 } from 'react-native';
+import { Notifications } from "expo";
 import * as firebase from 'firebase';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import BottomSheet from 'reanimated-bottom-sheet';
+import NavigationService from '../service/navigation';
+import registerForPushNotificationsAsync from '../service/notification';
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
+import DropdownAlert from 'react-native-dropdownalert'
 
 var firebaseConfig = {
 
@@ -24,7 +31,11 @@ export default class HomeScreen extends React.Component {
     notification: null,
     latitude: null,
     longitude: null,
+    findingState: false,
+    user: null,
   };
+
+  bs= React.createRef();
 
   stopJob = async () => {
     //stop receive notification
@@ -33,11 +44,14 @@ export default class HomeScreen extends React.Component {
   };
 
   startJob = async () => {
+    this.setState ({findingState: true});
     //push id device to sever
     await this.enableNotification ();
 
     //udpate location to firebase
     await this.updateLocation ();
+    
+    this.bs.current.snapTo (1);
   };
 
   enableNotification = async () => {
@@ -48,6 +62,7 @@ export default class HomeScreen extends React.Component {
 
     this._notificationSubscription = Notifications.addListener (noti => {
       this.setState ({notification: noti});
+      this.bs.current.snapTo(0)
       this.dropDownAlertRef.alertWithType (
         'warn',
         'Notification',
@@ -89,20 +104,79 @@ export default class HomeScreen extends React.Component {
     );
   };
 
+  handleAccept = () => {
+    //call api accept get user coords
+
+    //handle if accept fail
+
+    //navigate to Map Direction
+
+    // if (user) {
+      NavigationService.navigate ('MapDirection', user);
+    // }
+  };
+
+  renderHeader = () => {
+    const {notification} = this.state
+    if (notification) {
+      return (
+        <View>
+          <Text>
+            Let's Start Working
+          </Text>
+        </View>
+      );
+    } else {
+      <View>
+        <Text>
+          Find One
+        </Text>
+      </View>;
+    }
+  };
+
   renderContent = () => {
     if (this.state.notification) {
-      return (<View >
+      return (
+        <View style={styles.subContainer}>
+          <Image source={require ('../assets/images/searching.gif')} />
+          <Text>Found One</Text>
+          <Text>Order Id: E33</Text>
+          <Text>Description: Nha tui bi hu may lanh</Text>
+          <Text>Price: 20$</Text>
+          <Text>Customer's Phone: 0903543178</Text>
+          <View style={{flexDirection: 'row'}}>
 
-      </View>);
+            <TouchableOpacity onPress={this.handleAccept}>
+              <View style={styles.buttonView}>
+                <Text>Chấp nhận</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <View style={styles.buttonView}>
+                <Text>Từ Chối</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.subContainer}>
+          <Image source={require ('../assets/images/searching.gif')} />
+          <Text>Searching your Jobs</Text>
+        </View>
+      );
     }
-    return(
-      
-    )
   };
 
   render () {
+    const {findingState, notification} = this.state;
+    console.log(notification+'nofiticaion')
     return (
       <View style={styles.container}>
+              <DropdownAlert ref={ref => this.dropDownAlertRef = ref} />
         <StatusBar
           translucent
           backgroundColor="#000"
@@ -114,6 +188,7 @@ export default class HomeScreen extends React.Component {
           source={require ('../assets/images/ext.jpeg')}
         />
         <View style={styles.groupButton}>
+
           <View style={{flex: 1}}>
             <TouchableOpacity onPress={this.startJob}>
               <View style={styles.buttonView}>
@@ -127,8 +202,25 @@ export default class HomeScreen extends React.Component {
               </View>
             </TouchableOpacity>
           </View>
+
+          {/* //   <View style={{flex: 1}}>
+          //     if()
+          //     <TouchableOpacity onPress={this.stop}>
+          //       <View style={styles.buttonView}>
+          //         <Image
+          //           style={{width: 70, height: 70}}
+          //           source={require ('../assets/images/car_1.png')}
+          //         />
+          //         <Text style={styles.mainButtonText}>
+          //           Stop Finding Job
+          //         </Text>
+          //       </View>
+          //     </TouchableOpacity>
+          //   </View>
+          // } */}
+
           <View style={{flex: 1}}>
-            <TouchableOpacity onPress={this.startJob}>
+            <TouchableOpacity onPress={this.stopJob}>
               <View style={styles.buttonView}>
                 <Image
                   style={{width: 70, height: 70}}
@@ -143,12 +235,14 @@ export default class HomeScreen extends React.Component {
         </View>
         <BottomSheet
           snapPoints={[
-            Dimensions.get ('screen').height / 2,
+            Dimensions.get ('screen').height * 7 / 10,
             Dimensions.get ('screen').height / 4,
             0,
           ]}
-          initialSnap={0}
+          initialSnap={2}
+          ref={this.bs}
           renderContent={this.renderContent}
+          renderHeader={this.renderHeader}
         />
       </View>
     );
@@ -160,6 +254,15 @@ const styles = StyleSheet.create ({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
+    // justifyContent: 'center',
+  },
+  subContainer: {
+    padding: 20,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    width: Dimensions.get ('screen').width,
+    height: Dimensions.get ('screen').height * 7 / 10,
+
     // justifyContent: 'center',
   },
 
@@ -180,6 +283,15 @@ const styles = StyleSheet.create ({
   buttonView: {
     padding: 20,
     backgroundColor: 'rgba(80, 203, 203, 1)',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    width: Dimensions.get ('screen').width * 8 / 10,
+  },
+  buttonCancelView: {
+    padding: 20,
+    backgroundColor: 'red',
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',

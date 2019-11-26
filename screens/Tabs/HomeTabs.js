@@ -23,7 +23,7 @@ export default class HomeTabs extends React.Component {
         notification: null,
         latitude: null,
         longitude: null,
-     
+        findingStatus: false, 
     }
 
 
@@ -38,6 +38,7 @@ export default class HomeTabs extends React.Component {
             }
           );
        await this.updateLocation();
+       this.setState()
     }
 
     updateLocation = async () => {
@@ -108,7 +109,6 @@ export default class HomeTabs extends React.Component {
 
           </View>
         </TouchableOpacity>
-
         <TouchableOpacity onPress={this.startWork}>
           <View style={styles.buttons}>
             <Text style={styles.text}>Start Your Work</Text>

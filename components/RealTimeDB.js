@@ -62,7 +62,7 @@ export default class RealtimeDB extends Component {
           snapPoints={[450, 300, 0]}
           renderContent={this.renderContent}
           ref={this.bs}
-            initialSnap={1}
+            initialSnap={0}
         />
       </View>
     );
