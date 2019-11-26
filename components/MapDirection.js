@@ -12,17 +12,20 @@ export default class MapDirection extends Component {
     locations: locations,
   };
 
- async componentWillMount() {
+  async componentWillMount () {
     const {status} = await Permissions.askAsync (Permissions.LOCATION);
 
     if (status != 'granted') {
       const response = await Permissions.askAsync (Permissions.LOCATION);
     }
+
     let location = await Location.getCurrentPositionAsync ({});
+
     let current = {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     };
+
     this.setState (current);
     const {locations: [sampleLocation]} = this.state;
     this.setState (
@@ -32,32 +35,31 @@ export default class MapDirection extends Component {
       },
       () => console.log ('locations state' + this.state)
     );
-  };
+  }
 
-  render() {
-        const {latitude, longitude, locations} = this.state;
-       if (latitude) {
-          return (
-            <MapView
-              showsUserLocation
-              style={{flex: 1}}
-              initialRegion={{
-                latitude,
-                longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-            >
-              <MapViewDirections
-                origin={{latitude, longitude}}
-                destination={locations[0].coords}
-                apikey={'AIzaSyBF3Kg42z_Q3fVAwJdnuOgxLCcZAj3K56E'}
-                strokeWidth={3}
-                strokeColor="blue"
-              />
-            </MapView>
-          );
-        }
+  render () {
+    const {latitude, longitude, locations} = this.state;
+    if (latitude) {
+      return (
+        <MapView
+          showsUserLocation
+          style={{flex: 1}}
+          initialRegion={{
+            latitude,
+            longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        >
+          <MapViewDirections
+            origin={{latitude, longitude}}
+            destination={locations[0].coords}
+            apikey={''}
+            strokeWidth={3}
+            strokeColor="blue"
+          />
+        </MapView>
+      );
+    }
   }
 }
-
